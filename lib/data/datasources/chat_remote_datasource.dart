@@ -9,15 +9,10 @@ part 'chat_remote_datasource.g.dart';
 @RestApi()
 abstract class ChatRemoteDatasource {
   @factoryMethod
-  factory ChatRemoteDatasource(Dio dio, {String? baseUrl}) =
+  factory ChatRemoteDatasource(Dio dio, {String baseUrl}) =
       _ChatRemoteDatasource;
 
-  // Получить список сообщений (пример, если есть такой endpoint)
-  @GET('/chat/messages')
-  Future<List<MessageModel>> getMessages();
 
-
-  // Получить completion-ответ (переписка с ассистентом)
 @POST('/chat/completions')
 Future<ResponseModel> getCompletion(
   @Header('Authorization') String authHeader,

@@ -12,17 +12,7 @@ class ChatRepositoryImpl implements ChatRepository {
 
   ChatRepositoryImpl({required this.remoteDatasource});
 
-  @override
-  Future<List<MessageEntity>> getMessages() async {
-    // если нужен отдельный call для истории чата — используешь соответствующий метод
-    try {
-      final models = await remoteDatasource.getMessages();
-      return models.map((e) => e.toEntity()).toList();
-    } catch (e) {
-      debugPrint('Error getting messages: $e');
-      rethrow;
-    }
-  }
+
 
   @override
   Future<MessageEntity> sendMessage(MessageEntity message) async {

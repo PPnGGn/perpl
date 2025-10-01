@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:perpl/presentation/chat/cubit/chat_cubit.dart';
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
 import 'domain/usecases/send_message.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Инициализация Dependency Injection
   await configureDependencies();
-
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 
@@ -23,9 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final sendMessageUseCase = getIt<SendMessage>();
     return BlocProvider(
-      create: (context) => ChatCubit(
-        sendMessageUseCase: sendMessageUseCase,
-      ),
+      create: (context) => ChatCubit(sendMessageUseCase: sendMessageUseCase),
       child: MaterialApp.router(
         title: 'Perplexity Clone',
         debugShowCheckedModeBanner: false,

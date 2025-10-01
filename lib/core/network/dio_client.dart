@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
 
 @module
@@ -7,7 +8,7 @@ abstract class DioModule {
   Dio dio() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.perplexity.ai',
+        baseUrl: dotenv.env['BASE_URL']!,
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
         headers: {
@@ -17,7 +18,6 @@ abstract class DioModule {
       ),
     );
 
-    // Добавляем интерцепторы для логирования
     dio.interceptors.add(
       LogInterceptor(
         requestBody: true,
