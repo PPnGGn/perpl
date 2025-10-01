@@ -10,7 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i2;
-import 'package:perpl/presentation/pages/chat_screen_page.dart' as _i1;
+import 'package:perpl/presentation/chat/chat_page.dart' as _i1;
 
 /// generated route for
 /// [_i1.ChatScreen]

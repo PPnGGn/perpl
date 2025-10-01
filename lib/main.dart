@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:perpl/presentation/cubit/chat_cubit.dart';
+import 'package:perpl/presentation/chat/cubit/chat_cubit.dart';
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
 import 'domain/usecases/send_message.dart';
