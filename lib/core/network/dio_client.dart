@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
+import 'package:perpl/core/constants/app_constants.dart';
 
 @module
 abstract class DioModule {
@@ -8,12 +8,13 @@ abstract class DioModule {
   Dio dio() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: dotenv.env['BASE_URL']!,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
+        baseUrl: ApiConstants.baseUrl,
+        connectTimeout: ApiConstants.connectTimeout,
+        receiveTimeout: ApiConstants.receiveTimeout,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${ApiConstants.apiKey}',
         },
       ),
     );

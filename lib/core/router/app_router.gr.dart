@@ -13,7 +13,7 @@ import 'package:auto_route/auto_route.dart' as _i2;
 import 'package:perpl/presentation/chat/chat_page.dart' as _i1;
 
 /// generated route for
-/// [_i1.ChatScreen]
+/// [_i1.ChatPage]
 class ChatRoute extends _i2.PageRouteInfo<void> {
   const ChatRoute({List<_i2.PageRouteInfo>? children})
     : super(ChatRoute.name, initialChildren: children);
@@ -23,7 +23,7 @@ class ChatRoute extends _i2.PageRouteInfo<void> {
   static _i2.PageInfo page = _i2.PageInfo(
     name,
     builder: (data) {
-      return const _i1.ChatScreen();
+      return const _i1.ChatPage();
     },
   );
 }

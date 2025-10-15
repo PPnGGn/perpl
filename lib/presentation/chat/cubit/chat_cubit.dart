@@ -1,35 +1,50 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:perpl/domain/entities/entities.dart';
-import 'package:perpl/domain/usecases/send_message.dart';
-
-part 'chat_state.dart';
+import 'package:perpl/domain/usecases/send_message_stream.dart';
 
 part 'chat_cubit.freezed.dart';
 
+part 'chat_state.dart';
+
 class ChatCubit extends Cubit<ChatState> {
-  final SendMessage sendMessageUseCase;
-  final List<MessageEntity> _messageHistory = [];
+  final SendMessageStream sendMessageStreamUseCase;
+  final List<MessageEntity> _messages = [];
 
-  ChatCubit({required this.sendMessageUseCase}) : super(const ChatState.initial());
-
-  Future<void> loadChatHistory() async {
-    emit(const ChatState.loading());
-    _messageHistory.clear(); // сбрасываем историю (можно добавить локальный кэш)
-    emit(ChatState.loaded(List.from(_messageHistory)));
+  ChatCubit({required this.sendMessageStreamUseCase}) : super(const ChatState.loading()) {
+    _loadHistory();
   }
 
-  Future<void> sendUserMessage(MessageEntity userMessage) async {
-    emit(const ChatState.loading());
-    _messageHistory.add(userMessage);
-    final result = await sendMessageUseCase(_messageHistory); // Передаём всю историю!
-    result.fold((failure) => emit(ChatState.error(failure.toString())), (aiAnswer) {
-      _messageHistory.add(aiAnswer);
-      emit(ChatState.loaded(List.from(_messageHistory)));
-    });
+  void _loadHistory() async {
+    // Пока просто переход в loaded сразу, потом надо добавить загрузку из дрифта:
+    emit(ChatState.loaded(List.from(_messages)));
   }
 
-  void reset() {
-    /* ... */
+  void sendUserMessage(MessageEntity userMessage) {
+    _messages.add(userMessage);
+    emit(const ChatState.loading());
+
+    String aiContent = '';
+    final stream = sendMessageStreamUseCase(List.from(_messages));
+
+    stream.listen(
+      (chunk) {
+        aiContent += chunk;
+        if (_messages.isEmpty || _messages.last.role != 'assistant') {
+          _messages.add(MessageEntity(role: 'assistant', content: aiContent));
+        } else {
+          _messages[_messages.length - 1] = MessageEntity(role: 'assistant', content: aiContent);
+        }
+        emit(ChatState.loaded(List.from(_messages)));
+      },
+      onError: (e) {
+        emit(ChatState.error(e.toString()));
+      },
+    );
+  }
+
+  void resetChat() {
+    _messages.clear();
+    emit(const ChatState.initial());
   }
 }

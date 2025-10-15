@@ -19,6 +19,7 @@ class MessageInput extends StatelessWidget {
                 controller: controller,
                 minLines: 1,
                 maxLines: 5,
+                style: const TextStyle(color: Colors.black),
                 decoration: const InputDecoration(
                   hintText: 'Введите сообщение...',
                   border: OutlineInputBorder(),
