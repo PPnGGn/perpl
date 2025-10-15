@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:perpl/data/dto/models/repsonse/response_models.dart';
+import 'package:perpl/data/models/repsonse/response_models.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 

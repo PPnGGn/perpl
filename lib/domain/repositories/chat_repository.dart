@@ -1,9 +1,7 @@
-
-
+import 'package:dartz/dartz.dart';
+import 'package:perpl/core/error/failures.dart';
 import 'package:perpl/domain/entities/entities.dart';
 
 abstract class ChatRepository {
-
-  /// Отправить новое сообщение и получить ответ AI
-  Future<MessageEntity> sendMessage(MessageEntity message);
+  Future<Either<Failure, MessageEntity>> sendMessage(List<MessageEntity> messageHistory);
 }

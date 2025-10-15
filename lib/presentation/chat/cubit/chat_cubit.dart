@@ -4,48 +4,32 @@ import 'package:perpl/domain/entities/entities.dart';
 import 'package:perpl/domain/usecases/send_message.dart';
 
 part 'chat_state.dart';
+
 part 'chat_cubit.freezed.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   final SendMessage sendMessageUseCase;
+  final List<MessageEntity> _messageHistory = [];
 
-  ChatCubit({
-    required this.sendMessageUseCase,
-  }) : super(const ChatState.initial());
+  ChatCubit({required this.sendMessageUseCase}) : super(const ChatState.initial());
 
-  // Возможно, нужно будет добавить репозиторий/UseCase для истории!
   Future<void> loadChatHistory() async {
     emit(const ChatState.loading());
-    try {
-      // Здесь — история если есть, иначе просто пусто
-      final messages = <MessageEntity>[];
-      emit(ChatState.loaded(messages));
-    } catch (e) {
-      emit(ChatState.error(e.toString()));
-    }
+    _messageHistory.clear(); // сбрасываем историю (можно добавить локальный кэш)
+    emit(ChatState.loaded(List.from(_messageHistory)));
   }
 
-  /// Основной метод — отправляем user сообщение, получаем ответ ассистента
   Future<void> sendUserMessage(MessageEntity userMessage) async {
     emit(const ChatState.loading());
-    try {
-      // Отправляем вопрос, получаем completion (ответ ассистента)
-      final aiAnswer = await sendMessageUseCase(userMessage);
-
-      // Тут можно накапливать историю, если нужно
-      final messages = <MessageEntity>[userMessage, aiAnswer];
-
-      emit(ChatState.loaded(messages));
-    } catch (e) {
-      emit(ChatState.error(e.toString()));
-    }
-  }
-
-  void showError(String message) {
-    emit(ChatState.error(message));
+    _messageHistory.add(userMessage);
+    final result = await sendMessageUseCase(_messageHistory); // Передаём всю историю!
+    result.fold((failure) => emit(ChatState.error(failure.toString())), (aiAnswer) {
+      _messageHistory.add(aiAnswer);
+      emit(ChatState.loaded(List.from(_messageHistory)));
+    });
   }
 
   void reset() {
-    emit(const ChatState.initial());
+    /* ... */
   }
 }
